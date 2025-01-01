@@ -74,25 +74,23 @@ const AddExpenditureForm = () => {
       className="body-16-m relative flex w-full flex-col items-center gap-y-7"
       onSubmit={handleSubmit(onSubmit)}
     >
-      <div className="w-64 space-y-7">
-        <Input
-          title="내용"
-          {...register("title")}
-          error={errors.title?.message}
-        />
-        <Input
-          title="비고"
-          {...register("comment")}
-          error={errors.comment?.message}
-        />
-        <Input
-          title="금액"
-          {...register("amount", {
-            valueAsNumber: true,
-          })}
-          error={errors.amount?.message}
-        />
-      </div>
+      <Input
+        title="내용"
+        {...register("title")}
+        error={errors.title?.message}
+      />
+      <Input
+        title="비고"
+        {...register("comment")}
+        error={errors.comment?.message}
+      />
+      <Input
+        title="금액"
+        {...register("amount", {
+          valueAsNumber: true,
+        })}
+        error={errors.amount?.message}
+      />
       <SelectCategory
         onSelectMain={(main) => setValue("main", main)}
         onSelectSub={(sub) => setValue("sub", sub)}

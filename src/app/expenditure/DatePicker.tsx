@@ -11,7 +11,7 @@ const DatePicker = ({
   children: string;
 }) => {
   return (
-    <div className="flex w-full flex-col gap-y-3 text-center">
+    <div className="flex w-full flex-col gap-y-2 text-center">
       <p>{children}</p>
       <Calendar
         mode="single"
