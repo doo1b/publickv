@@ -7,39 +7,33 @@ import { z } from "zod";
 import SelectCategory from "./SelectCategory";
 import DatePicker from "./DatePicker";
 import { useAddExp } from "@/querys/dataQuerys";
-import { GeneralExpenditureType, LoanExpenditureType } from "@/type/type";
+import { ExpenseInputType } from "@/type/type";
+import { useRef } from "react";
 
 const AddExpenditureForm = () => {
+  // 지출 등록하는 뮤테이션
   const addExp = useAddExp();
-  const expSchema = z
-    .object({
-      amount: z
-        .number({
-          invalid_type_error: "숫자만 입력",
-        })
-        .min(1, { message: "0보다 큰 수만 입력" })
-        .int({ message: "정수만 입력" }),
-      comment: z.string(),
-      title: z.string().nonempty({ message: "제목 미입력" }),
-      main: z.string().nonempty({ message: "대분류를 선택하세요" }),
-      sub: z.string().nonempty({ message: "소분류를 선택하세요" }),
-      type: z.string().nonempty({ message: "지출 형태를 선택하세요" }),
-      date: z.date({ required_error: "날짜를 선택하세요" }),
-      endDate: z.date().optional(),
-      card: z.string().nonempty({ message: "카드를 선택하세요" }),
-    })
-    .refine(
-      (data) => {
-        if (data.type === "저축" || data.type === "대출") {
-          return !!data.endDate;
-        }
-        return true;
-      },
-      { message: "만기일을 선택하세요.", path: ["endDate"] },
-    );
 
+  // 폼 제출 후 카테고리 초기화를 위한 Ref 연결
+  const resetRef = useRef<(() => void) | null>(null);
+
+  // zod 스키마 설정
+  const expSchema = z.object({
+    amount: z
+      .number({
+        invalid_type_error: "숫자만 입력",
+      })
+      .min(1, { message: "0보다 큰 수만 입력" })
+      .int({ message: "정수만 입력" }),
+    comment: z.string(),
+    title: z.string().nonempty({ message: "제목 미입력" }),
+    main: z.string().nonempty({ message: "분류를 선택하세요" }),
+    sub: z.string().nonempty({ message: "분류를 선택하세요" }),
+    date: z.date({ required_error: "날짜를 선택하세요" }),
+  });
   type ExpenditureFormData = z.infer<typeof expSchema>;
 
+  // react hook form
   const {
     register,
     formState: { errors },
@@ -51,22 +45,23 @@ const AddExpenditureForm = () => {
     resolver: zodResolver(expSchema),
     mode: "onBlur",
     defaultValues: {
-      amount: 0,
+      amount: undefined,
       comment: "",
       title: "",
       main: "",
       sub: "",
-      type: "",
       date: new Date(),
-      card: "",
     },
   });
-
   const dateValue = watch("date");
 
-  const onSubmit = (data: GeneralExpenditureType | LoanExpenditureType) => {
-    addExp(data);
-    reset();
+  // 폼 제출 동작
+  const onSubmit = (data: ExpenseInputType) => {
+    addExp(data); // db 제출
+    reset(); // 폼 리셋
+    if (resetRef.current) {
+      resetRef.current();
+    }
   };
 
   return (
@@ -94,8 +89,9 @@ const AddExpenditureForm = () => {
       <SelectCategory
         onSelectMain={(main) => setValue("main", main)}
         onSelectSub={(sub) => setValue("sub", sub)}
+        onReset={(reset) => (resetRef.current = reset)}
+        error={errors.main?.message || errors.sub?.message}
       />
-
       <div className="flex gap-x-7">
         <DatePicker
           value={dateValue}

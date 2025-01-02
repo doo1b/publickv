@@ -3,9 +3,13 @@ import { useState } from "react";
 const SelectMain = ({
   onSelectMain,
   onSelectSub,
+  error,
+  onReset,
 }: {
   onSelectMain: (main: string) => void;
   onSelectSub: (sub: string) => void;
+  error?: string;
+  onReset?: (reset: () => void) => void;
 }) => {
   const main = ["키친빌리지", "스테이크레이브", "생각대로", "기타"];
   const sub = ["임대", "렌탈", "이자", "원리금", "운영비", "공과금"];
@@ -13,8 +17,17 @@ const SelectMain = ({
   const [selectedMain, setSelectedMain] = useState("");
   const [selectedSub, setSelectedSub] = useState("");
 
+  const reset = () => {
+    setSelectedMain("");
+    setSelectedSub("");
+  };
+
+  if (onReset) {
+    onReset(reset);
+  }
+
   return (
-    <div className="body-14-r flex w-full flex-col gap-y-2">
+    <div className="body-14-r relative flex w-full flex-col gap-y-2">
       <p className="body-16-m text-center">카테고리</p>
       <div className="flex gap-x-3">
         <div className="flex h-full w-full flex-col gap-y-[1px] overflow-clip rounded-md border-[1px] bg-accent text-center">
@@ -46,6 +59,11 @@ const SelectMain = ({
           ))}
         </div>
       </div>
+      {error && (
+        <p className="caption absolute -bottom-4 right-1 font-semibold text-red-500">
+          {error}
+        </p>
+      )}
     </div>
   );
 };
