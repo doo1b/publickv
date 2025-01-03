@@ -1,7 +1,11 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { addDoc, collection, getDocs, query, where } from "firebase/firestore";
 import { db } from "../../firebase/firebasedb";
-import { ExpenseInputType, ExpenseOutputType } from "@/type/type";
+import {
+  ExpenseInputType,
+  ExpenseOutputType,
+  FinancialInputType,
+} from "@/type/type";
 
 export const useExpenditure = (viewDate: Date) => {
   const yymm =
@@ -49,4 +53,22 @@ export const useAddExp = () => {
     },
   });
   return (data: ExpenseInputType) => mutate(data);
+};
+
+export const useAddFin = () => {
+  const queryClient = useQueryClient();
+  const { mutate } = useMutation({
+    mutationFn: async (data: FinancialInputType) => {
+      try {
+        await addDoc(collection(db, "financial"), data);
+      } catch (error) {
+        console.error(error);
+        alert("지출 등록 중 오류 발생");
+      }
+    },
+    onSuccess: () => {
+      alert("지출 등록 완료!");
+    },
+  });
+  return (data: FinancialInputType) => mutate(data);
 };

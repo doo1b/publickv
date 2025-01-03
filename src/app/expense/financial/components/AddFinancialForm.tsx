@@ -1,24 +1,24 @@
 "use client";
 
-import Input from "./Input";
+import Input from "../../../expense/components/Input";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import SelectCategory from "./SelectCategory";
-import DatePicker from "./DatePicker";
-import { useAddExp } from "@/querys/dataQuerys";
-import { ExpenseInputType } from "@/type/type";
+import DatePicker from "../../../expense/components/DatePicker";
+import { FinancialInputType } from "@/type/type";
 import { useRef } from "react";
+import { useAddFin } from "@/querys/dataQuerys";
+import Category from "./Category";
 
 const AddExpenditureForm = () => {
   // 지출 등록하는 뮤테이션
-  const addExp = useAddExp();
+  const addFin = useAddFin();
 
   // 폼 제출 후 카테고리 초기화를 위한 Ref 연결
   const resetRef = useRef<(() => void) | null>(null);
 
   // zod 스키마 설정
-  const expSchema = z.object({
+  const finSchema = z.object({
     amount: z
       .number({
         invalid_type_error: "숫자만 입력",
@@ -26,12 +26,11 @@ const AddExpenditureForm = () => {
       .min(1, { message: "0보다 큰 수만 입력" })
       .int({ message: "정수만 입력" }),
     comment: z.string(),
-    title: z.string().nonempty({ message: "제목 미입력" }),
+    title: z.string().nonempty({ message: "내용을 입력하세요" }),
     main: z.string().nonempty({ message: "분류를 선택하세요" }),
-    sub: z.string().nonempty({ message: "분류를 선택하세요" }),
     date: z.date({ required_error: "날짜를 선택하세요" }),
   });
-  type ExpenditureFormData = z.infer<typeof expSchema>;
+  type ExpenditureFormData = z.infer<typeof finSchema>;
 
   // react hook form
   const {
@@ -42,25 +41,38 @@ const AddExpenditureForm = () => {
     watch,
     reset,
   } = useForm<ExpenditureFormData>({
-    resolver: zodResolver(expSchema),
+    resolver: zodResolver(finSchema),
     mode: "onBlur",
     defaultValues: {
       amount: undefined,
       comment: "",
       title: "",
       main: "",
-      sub: "",
       date: new Date(),
     },
   });
   const dateValue = watch("date");
+  const amountValue = watch("amount");
 
   // 폼 제출 동작
-  const onSubmit = (data: ExpenseInputType) => {
-    addExp(data); // db 제출
+  const onSubmit = (data: FinancialInputType) => {
+    addFin(data);
     reset(); // 폼 리셋
     if (resetRef.current) {
       resetRef.current();
+    }
+  };
+
+  const formatWithCommas = (value: number | string) => {
+    return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  };
+
+  const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const rawValue = e.target.value.replace(/,/g, "");
+    const numericValue = Number(rawValue);
+
+    if (!isNaN(numericValue)) {
+      setValue("amount", numericValue);
     }
   };
 
@@ -81,16 +93,14 @@ const AddExpenditureForm = () => {
       />
       <Input
         title="금액"
-        {...register("amount", {
-          valueAsNumber: true,
-        })}
+        value={amountValue !== undefined ? formatWithCommas(amountValue) : ""}
+        onChange={handleAmountChange}
         error={errors.amount?.message}
       />
-      <SelectCategory
+      <Category
         onSelectMain={(main) => setValue("main", main)}
-        onSelectSub={(sub) => setValue("sub", sub)}
         onReset={(reset) => (resetRef.current = reset)}
-        error={errors.main?.message || errors.sub?.message}
+        error={errors.main?.message}
       />
       <div className="flex gap-x-7">
         <DatePicker

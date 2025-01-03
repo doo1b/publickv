@@ -5,7 +5,7 @@ import { CustomCalendar } from "./ui/CustomCalendar";
 import { ko } from "date-fns/locale";
 import { useExpenditure } from "@/querys/dataQuerys";
 import { ExpenseInputWithId } from "@/type/type";
-import { DayContentProps, DayProps } from "react-day-picker";
+import { DayContentProps } from "react-day-picker";
 
 const HomeCalender = () => {
   const [month, setMonth] = useState<Date>(new Date());
@@ -23,7 +23,7 @@ const HomeCalender = () => {
   );
 
   return (
-    <div className={`relative w-[1000px]`}>
+    <div className={`relative w-full`}>
       <CustomCalendar
         locale={ko}
         mode="single"
@@ -34,13 +34,19 @@ const HomeCalender = () => {
           DayContent: (props: DayContentProps) => {
             const today = props.date.toDateString();
             const isOutside = props.activeModifiers.outside;
+            const isSelected = props.activeModifiers.selected;
+            const isToday = props.activeModifiers.today;
+            const events = eventMap?.[today];
             return (
-              <div className="flex h-full w-full flex-col">
-                <button
-                  className={`${isOutside ? "text-secondary-200" : "text-secondary-900"}`}
+              <div className="group flex h-full w-full flex-col">
+                <p
+                  className={`${isOutside ? "text-secondary-200" : "text-secondary-900"} border-b-2 ${isSelected ? "border-secondary-900" : isToday ? "border-secondary-300" : "border-transparent"} w-5 ${!isSelected && "group-hover:border-secondary-300"}`}
                 >
                   {props.date.getDate()}
-                </button>
+                </p>
+                {events?.map((e) => (
+                  <div key={e.id} className={`h-2 w-2 rounded-full`}></div>
+                ))}
               </div>
             );
           },

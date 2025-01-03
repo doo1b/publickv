@@ -7,7 +7,7 @@ const HeaderBadge = ({ menu }: { menu: string[] }) => {
   const pathname = usePathname();
   return (
     <div
-      className={`body-16-r h-fit min-w-fit rounded-xl px-4 py-2 ${pathname === menu[1] ? "bg-secondary-800 text-white" : "bg-secondary-100 hover:bg-secondary-400 hover:text-white"}`}
+      className={`body-16-r h-fit min-w-fit rounded-xl px-4 py-2 ${pathname === menu[1] ? "bg-secondary-800 text-white" : "border-[1px] border-secondary-800 hover:bg-accent"}`}
     >
       {menu[0]}
     </div>

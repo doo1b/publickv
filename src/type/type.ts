@@ -21,3 +21,23 @@ export interface ExpenseOutputType {
   sub: string;
   title: string;
 }
+
+export interface FinancialInputType {
+  amount: number;
+  comment: string | undefined;
+  date: Date;
+  main: string;
+  title: string;
+}
+
+export interface FinancialInputWithId extends FinancialInputType {
+  id: string;
+}
+
+export interface FinancialOutputType {
+  amount: number;
+  comment: string | undefined;
+  date: Timestamp;
+  main: string;
+  title: string;
+}
