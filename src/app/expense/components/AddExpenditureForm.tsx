@@ -45,7 +45,7 @@ const AddExpenditureForm = () => {
     resolver: zodResolver(expSchema),
     mode: "onBlur",
     defaultValues: {
-      amount: undefined,
+      amount: 0,
       comment: "",
       title: "",
       main: "",
