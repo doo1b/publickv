@@ -19,7 +19,7 @@ const DatePicker = ({
         onSelect={(date) => onChange?.(date!)}
         locale={ko}
         initialFocus
-        className="z-0 rounded-lg border-[1px] shadow-[0_2px_3px_0_rgba(0,0,0,0.1)]"
+        className="z-0 rounded-lg border-[1px] border-secondary-800 shadow-[0_2px_3px_0_rgba(0,0,0,0.1)]"
       />
     </div>
   );

@@ -1,4 +1,4 @@
-import AddExpenditureForm from "./AddExpenditureForm";
+import AddExpenditureForm from "./components/AddExpenditureForm";
 
 const page = () => {
   return (

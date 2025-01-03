@@ -26,7 +26,7 @@ const AddExpenditureForm = () => {
       .min(1, { message: "0보다 큰 수만 입력" })
       .int({ message: "정수만 입력" }),
     comment: z.string(),
-    title: z.string().nonempty({ message: "제목 미입력" }),
+    title: z.string().nonempty({ message: "내용을 입력하세요" }),
     main: z.string().nonempty({ message: "분류를 선택하세요" }),
     sub: z.string().nonempty({ message: "분류를 선택하세요" }),
     date: z.date({ required_error: "날짜를 선택하세요" }),
@@ -54,6 +54,21 @@ const AddExpenditureForm = () => {
     },
   });
   const dateValue = watch("date");
+  const amountValue = watch("amount");
+
+  // 금액 인풋 콤마 추가
+  const formatWithCommas = (value: number | string) => {
+    return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  };
+
+  const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const rawValue = e.target.value.replace(/,/g, "");
+    const numericValue = Number(rawValue);
+
+    if (!isNaN(numericValue)) {
+      setValue("amount", numericValue);
+    }
+  };
 
   // 폼 제출 동작
   const onSubmit = (data: ExpenseInputType) => {
@@ -81,9 +96,8 @@ const AddExpenditureForm = () => {
       />
       <Input
         title="금액"
-        {...register("amount", {
-          valueAsNumber: true,
-        })}
+        value={amountValue !== undefined ? formatWithCommas(amountValue) : ""}
+        onChange={handleAmountChange}
         error={errors.amount?.message}
       />
       <SelectCategory

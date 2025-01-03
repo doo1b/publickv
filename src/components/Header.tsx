@@ -3,7 +3,8 @@ import HeaderBadge from "./HeaderBadge";
 
 const Header = () => {
   const menu = [
-    ["지출 등록", "/expenditure"],
+    ["호수별 지출", "/expense"],
+    ["금융 비용", "/expense/financial"],
     ["가계부", "/"],
   ];
   return (
