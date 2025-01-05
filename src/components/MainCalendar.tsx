@@ -10,6 +10,7 @@ import useModal from "@/hooks/useModal";
 import Modal from "./ui/Modal";
 import { ExpenseInputWithId, FinancialInputWithId } from "@/type/type";
 import { FaCheck } from "react-icons/fa6";
+import useSelectStore from "@/store/selectStore";
 
 const MainCalendar = ({ children }: { children: React.ReactNode }) => {
   const { modalClose, modalOpen, isOpen } = useModal();
@@ -17,14 +18,20 @@ const MainCalendar = ({ children }: { children: React.ReactNode }) => {
   const [date, setDate] = useState<Date | undefined>(new Date());
   const [selectedDate, setSelectedDate] = useState<string>("");
   const [isView, setIsView] = useState(true);
+  const { selectYYMM } = useSelectStore();
 
   const { totalByDate, eventMap } = useExpenseData(month);
 
-  function hasSubProperty(
+  const hasSubProperty = (
     e: ExpenseInputWithId | FinancialInputWithId,
-  ): e is ExpenseInputWithId {
+  ): e is ExpenseInputWithId => {
     return "sub" in e;
-  }
+  };
+
+  const changeMonth = (date: Date) => {
+    selectYYMM(`${date.getFullYear()}년 ${date.getMonth() + 1}월`);
+    setMonth(date);
+  };
 
   return (
     <div>
@@ -35,7 +42,7 @@ const MainCalendar = ({ children }: { children: React.ReactNode }) => {
         mode="single"
         selected={date}
         onSelect={setDate}
-        onMonthChange={setMonth}
+        onMonthChange={changeMonth}
         components={{
           DayContent: (props: DayContentProps) => {
             const today = props.date.toDateString();

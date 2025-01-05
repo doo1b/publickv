@@ -1,3 +1,4 @@
+import ExpenseStats from "@/components/ExpenseStats";
 import MainCalendar from "@/components/MainCalendar";
 import { legend } from "@/utils/category";
 import React from "react";
@@ -16,6 +17,7 @@ const page = () => {
           ))}
         </div>
       </MainCalendar>
+      <ExpenseStats />
     </main>
   );
 };
