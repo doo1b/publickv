@@ -3,9 +3,9 @@ import HeaderBadge from "./HeaderBadge";
 
 const Header = () => {
   const menu = [
-    ["호수별 지출", "/expense"],
+    ["호수별 비용", "/expense"],
     ["금융 비용", "/expense/financial"],
-    ["가계부", "/"],
+    ["지출 통계", "/"],
   ];
   return (
     <header className="fixed left-0 top-0 z-50 flex h-[70px] w-full items-center justify-center gap-x-3 bg-white px-10">

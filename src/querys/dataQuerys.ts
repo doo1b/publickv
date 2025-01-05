@@ -5,13 +5,14 @@ import {
   ExpenseInputType,
   ExpenseOutputType,
   FinancialInputType,
+  FinancialOutputType,
 } from "@/type/type";
 
 export const useExpenditure = (viewDate: Date) => {
   const yymm =
     viewDate.getFullYear().toString() + "-" + viewDate.getMonth() + 1;
   return useQuery({
-    queryKey: ["expenditure", yymm],
+    queryKey: ["expense", "house", yymm],
     queryFn: async () => {
       const start = new Date(viewDate.getFullYear(), viewDate.getMonth(), 1);
       const end = new Date(
@@ -31,6 +32,36 @@ export const useExpenditure = (viewDate: Date) => {
       const data = querySnapshot.docs.map((doc) => ({
         id: doc.id,
         ...(doc.data() as ExpenseOutputType),
+      }));
+      return data.map((d) => ({ ...d, date: d.date.toDate() }));
+    },
+  });
+};
+
+export const useFinancial = (viewDate: Date) => {
+  const yymm =
+    viewDate.getFullYear().toString() + "-" + viewDate.getMonth() + 1;
+  return useQuery({
+    queryKey: ["expense", "financial", yymm],
+    queryFn: async () => {
+      const start = new Date(viewDate.getFullYear(), viewDate.getMonth(), 1);
+      const end = new Date(
+        viewDate.getFullYear(),
+        viewDate.getMonth() + 1,
+        0,
+        23,
+        59,
+      ); // 늦게 등록한 것도 집계될 수 있도록
+      const querySnapshot = await getDocs(
+        query(
+          collection(db, "financial"),
+          where("date", ">=", start),
+          where("date", "<=", end),
+        ),
+      );
+      const data = querySnapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...(doc.data() as FinancialOutputType),
       }));
       return data.map((d) => ({ ...d, date: d.date.toDate() }));
     },

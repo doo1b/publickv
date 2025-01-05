@@ -1,57 +1,26 @@
-"use client";
+import MainCalendar from "./MainCalendar";
+import { FaCheck } from "react-icons/fa6";
 
-import { useState } from "react";
-import { CustomCalendar } from "./ui/CustomCalendar";
-import { ko } from "date-fns/locale";
-import { useExpenditure } from "@/querys/dataQuerys";
-import { ExpenseInputWithId } from "@/type/type";
-import { DayContentProps } from "react-day-picker";
+const legend: { [key: string]: string } = {
+  "50만원 이하": "black",
+  "100만원 이하": "green",
+  "500만원 이하": "blue",
+  "500만원 초과": "red",
+};
 
 const HomeCalender = () => {
-  const [month, setMonth] = useState<Date>(new Date());
-  const [date, setDate] = useState<Date | undefined>(new Date());
-
-  const { data: expenditureList } = useExpenditure(month);
-  const eventMap = expenditureList?.reduce(
-    (acc, exp) => {
-      const eventDate = new Date(exp.date).toDateString();
-      if (!acc[eventDate]) acc[eventDate] = [];
-      acc[eventDate].push(exp);
-      return acc;
-    },
-    {} as Record<string, Array<ExpenseInputWithId>>,
-  );
-
   return (
     <div className={`relative w-full`}>
-      <CustomCalendar
-        locale={ko}
-        mode="single"
-        selected={date}
-        onSelect={setDate}
-        onMonthChange={setMonth}
-        components={{
-          DayContent: (props: DayContentProps) => {
-            const today = props.date.toDateString();
-            const isOutside = props.activeModifiers.outside;
-            const isSelected = props.activeModifiers.selected;
-            const isToday = props.activeModifiers.today;
-            const events = eventMap?.[today];
-            return (
-              <div className="group flex h-full w-full flex-col">
-                <p
-                  className={`${isOutside ? "text-secondary-200" : "text-secondary-900"} border-b-2 ${isSelected ? "border-secondary-900" : isToday ? "border-secondary-300" : "border-transparent"} w-5 ${!isSelected && "group-hover:border-secondary-300"}`}
-                >
-                  {props.date.getDate()}
-                </p>
-                {events?.map((e) => (
-                  <div key={e.id} className={`h-2 w-2 rounded-full`}></div>
-                ))}
-              </div>
-            );
-          },
-        }}
-      />
+      <MainCalendar>
+        <div className="caption mt-2 flex gap-x-4 md:hidden">
+          {Object.entries(legend).map((o) => (
+            <div key={o[0]} className="flex items-center gap-x-1">
+              <FaCheck color={o[1]} />
+              <p>{o[0]}</p>
+            </div>
+          ))}
+        </div>
+      </MainCalendar>
     </div>
   );
 };
