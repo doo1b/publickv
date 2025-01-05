@@ -12,7 +12,7 @@ const HomeCalender = () => {
   return (
     <div className={`relative w-full`}>
       <MainCalendar>
-        <div className="caption mt-2 flex gap-x-4 md:hidden">
+        <div className="caption mt-2 flex w-full justify-between md:hidden">
           {Object.entries(legend).map((o) => (
             <div key={o[0]} className="flex items-center gap-x-1">
               <FaCheck color={o[1]} />
