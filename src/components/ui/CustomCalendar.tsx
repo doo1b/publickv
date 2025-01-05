@@ -8,13 +8,14 @@ import { cn } from "@/lib/utils";
 import { buttonVariants } from "@/components/ui/button";
 
 export type CalendarProps = React.ComponentProps<typeof DayPicker> & {
-  viewType?: string;
+  isView?: boolean;
 };
 
 function CustomCalendar({
   className,
   classNames,
   showOutsideDays = true,
+  isView,
   ...props
 }: CalendarProps) {
   return (
@@ -34,7 +35,7 @@ function CustomCalendar({
         ),
         nav_button_previous: "absolute left-0",
         nav_button_next: "absolute right-0",
-        table: "w-full border-collapse",
+        table: `w-full border-collapse ${!isView && "hidden"}`,
         head_row:
           "grid grid-cols-[repeat(7,minmax(45px,1fr))] w-full md:mb-0 mb-3",
         head_cell:

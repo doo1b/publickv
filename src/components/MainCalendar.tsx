@@ -16,6 +16,7 @@ const MainCalendar = ({ children }: { children: React.ReactNode }) => {
   const [month, setMonth] = useState<Date>(new Date());
   const [date, setDate] = useState<Date | undefined>(new Date());
   const [selectedDate, setSelectedDate] = useState<string>("");
+  const [isView, setIsView] = useState(true);
 
   const { totalByDate, eventMap } = useExpenseData(month);
 
@@ -28,6 +29,7 @@ const MainCalendar = ({ children }: { children: React.ReactNode }) => {
   return (
     <div>
       <CustomCalendar
+        isView={isView}
         onDayClick={modalOpen}
         locale={ko}
         mode="single"
@@ -74,7 +76,13 @@ const MainCalendar = ({ children }: { children: React.ReactNode }) => {
           },
         }}
       />
-      {children}
+      {isView && children}
+      <button
+        onClick={() => setIsView(!isView)}
+        className="caption md:body-14-r mt-4 rounded-md border-[1px] px-2 py-1 hover:bg-accent"
+      >
+        {isView ? "달력 접기" : "달력 펼치기"}
+      </button>
       {isOpen && (
         <Modal onClose={modalClose}>
           <div className="flex flex-col gap-y-2">

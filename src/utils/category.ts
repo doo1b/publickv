@@ -33,3 +33,10 @@ export const financialMain = [
   "운영비",
   "공과금",
 ];
+
+export const legend: { [key: string]: string } = {
+  "50만원 이하": "black",
+  "100만원 이하": "green",
+  "500만원 이하": "blue",
+  "500만원 초과": "red",
+};
