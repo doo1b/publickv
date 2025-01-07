@@ -18,7 +18,7 @@ const MainCalendar = ({ children }: { children: React.ReactNode }) => {
   const [date, setDate] = useState<Date | undefined>(new Date());
   const [selectedDate, setSelectedDate] = useState<string>("");
   const [isView, setIsView] = useState(true);
-  const { selectYYMM } = useSelectStore();
+  const { selectDate } = useSelectStore();
 
   const { totalByDate, eventMap } = useExpenseData(month);
 
@@ -29,12 +29,12 @@ const MainCalendar = ({ children }: { children: React.ReactNode }) => {
   };
 
   const changeMonth = (date: Date) => {
-    selectYYMM(`${date.getFullYear()}년 ${date.getMonth() + 1}월`);
+    selectDate(date);
     setMonth(date);
   };
 
   return (
-    <div>
+    <div className="mx-auto w-full md:w-[800px]">
       <CustomCalendar
         isView={isView}
         onDayClick={modalOpen}
@@ -92,7 +92,7 @@ const MainCalendar = ({ children }: { children: React.ReactNode }) => {
       </button>
       {isOpen && (
         <Modal onClose={modalClose}>
-          <div className="flex flex-col gap-y-2">
+          <div className="grid gap-x-4 gap-y-2 md:grid-cols-3">
             {!eventMap?.[selectedDate] ? (
               <p className="body-14-r md:body-16-r">지출이 없습니다.</p>
             ) : (

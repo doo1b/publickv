@@ -9,6 +9,7 @@ import DatePicker from "./DatePicker";
 import { useAddExp } from "@/querys/dataQuerys";
 import { ExpenseInputType } from "@/type/type";
 import { useRef } from "react";
+import { formatWithCommas } from "@/utils/formatWithCommas";
 
 const AddExpenditureForm = () => {
   // 지출 등록하는 뮤테이션
@@ -55,11 +56,6 @@ const AddExpenditureForm = () => {
   });
   const dateValue = watch("date");
   const amountValue = watch("amount");
-
-  // 금액 인풋 콤마 추가
-  const formatWithCommas = (value: number | string) => {
-    return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-  };
 
   const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const rawValue = e.target.value.replace(/,/g, "");

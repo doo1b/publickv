@@ -1,13 +1,13 @@
 import { create } from "zustand";
 
 interface selectStore {
-  selectedYYMM: string;
-  selectYYMM: (yymm: string) => void;
+  selectedDate: Date;
+  selectDate: (date: Date) => void;
 }
 
 const useSelectStore = create<selectStore>((set) => ({
-  selectedYYMM: `${new Date().getFullYear()}년 ${new Date().getMonth() + 1}월`,
-  selectYYMM: (yymm: string) => set({ selectedYYMM: yymm }),
+  selectedDate: new Date(),
+  selectDate: (date: Date) => set({ selectedDate: date }),
 }));
 
 export default useSelectStore;

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import CategoryBadge from "./CategoryBadge";
-import { expenseMain, expenseMsub } from "@/utils/category";
+import { expenseMain, expenseSub } from "@/utils/category";
 
 const SelectMain = ({
   onSelectMain,
@@ -44,7 +44,7 @@ const SelectMain = ({
           className={`${selectedMain === "주 재료" ? "grid-cols-2" : "grid-cols-1"} grid h-full w-2/3 gap-[1px] overflow-clip rounded-md border-[1px] border-secondary-800 bg-secondary-800 text-center`}
         >
           {selectedMain ? (
-            expenseMsub[selectedMain].map((c) => (
+            expenseSub[selectedMain].map((c) => (
               <CategoryBadge
                 key={c}
                 c={c}

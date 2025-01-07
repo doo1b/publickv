@@ -9,6 +9,7 @@ import { FinancialInputType } from "@/type/type";
 import { useRef } from "react";
 import { useAddFin } from "@/querys/dataQuerys";
 import Category from "./Category";
+import { formatWithCommas } from "@/utils/formatWithCommas";
 
 const AddExpenditureForm = () => {
   // 지출 등록하는 뮤테이션
@@ -61,10 +62,6 @@ const AddExpenditureForm = () => {
     if (resetRef.current) {
       resetRef.current();
     }
-  };
-
-  const formatWithCommas = (value: number | string) => {
-    return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   };
 
   const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {

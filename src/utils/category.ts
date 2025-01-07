@@ -1,6 +1,6 @@
 export const expenseMain = ["주 재료", "공용 재료", "대행비"];
 
-export const expenseMsub: { [key: string]: string[] } = {
+export const expenseSub: { [key: string]: string[] } = {
   "주 재료": [
     "포아이니",
     "장칼국수",
