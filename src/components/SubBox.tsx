@@ -19,10 +19,8 @@ const SubBox = ({
         );
         return (
           <div key={s} className="flex justify-between py-1">
-            <p className="body-16-r">{s}</p>
-            <p className="body-16-r text-right">
-              {formatWithCommas(totalSub)}원
-            </p>
+            <p>{s}</p>
+            <p>{formatWithCommas(totalSub)} 원</p>
           </div>
         );
       })}

@@ -25,7 +25,7 @@ const FinBox = ({
           return (
             <div key={m} className="flex justify-between py-1">
               <p>{m}</p>
-              <p>{formatWithCommas(totalMain)}원</p>
+              <p>{formatWithCommas(totalMain)} 원</p>
             </div>
           );
         })}

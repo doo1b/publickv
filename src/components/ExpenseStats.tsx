@@ -24,7 +24,7 @@ const ExpenseStats = () => {
         지출 통계
       </p>
       <p className="body-16-m">총 {formatWithCommas(totalExp)}원</p>
-      <div className="grid grid-cols-1 gap-x-6 gap-y-4 md:grid-cols-[repeat(4,minmax(200px,1fr))]">
+      <div className="body-16-r grid grid-cols-1 gap-x-6 gap-y-4 md:grid-cols-[repeat(4,minmax(200px,1fr))]">
         {expenseMain.map((m) => {
           return <ExpenseBox key={m} m={m} expenseData={expenseData} />;
         })}

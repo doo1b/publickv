@@ -32,7 +32,7 @@ const AddExpenditureForm = () => {
     sub: z.string().nonempty({ message: "분류를 선택하세요" }),
     date: z.date({ required_error: "날짜를 선택하세요" }),
   });
-  type ExpenditureFormData = z.infer<typeof expSchema>;
+  type ExpenseFormData = z.infer<typeof expSchema>;
 
   // react hook form
   const {
@@ -42,7 +42,7 @@ const AddExpenditureForm = () => {
     setValue,
     watch,
     reset,
-  } = useForm<ExpenditureFormData>({
+  } = useForm<ExpenseFormData>({
     resolver: zodResolver(expSchema),
     mode: "onBlur",
     defaultValues: {

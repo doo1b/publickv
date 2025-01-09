@@ -1,7 +1,12 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { addDoc, collection } from "firebase/firestore";
+import { addDoc, collection, deleteDoc, doc } from "firebase/firestore";
 import { db } from "../../firebase/firebasedb";
-import { ExpenseInputType, FinancialInputType } from "@/type/type";
+import {
+  ExpenseInputType,
+  ExpenseInputWithId,
+  FinancialInputType,
+  FinancialInputWithId,
+} from "@/type/type";
 import { fetchExpense, fetchFinancial } from "./fetchData";
 
 export const useExpenditure = (viewDate: Date) => {
@@ -58,4 +63,27 @@ export const useAddFin = () => {
     },
   });
   return (data: FinancialInputType) => mutate(data);
+};
+
+export const useDelExpense = () => {
+  const queryClient = useQueryClient();
+  const { mutate } = useMutation({
+    mutationFn: async (data: FinancialInputWithId | ExpenseInputWithId) => {
+      try {
+        if (`sub` in data) {
+          await deleteDoc(doc(db, "expense", data.id));
+        } else {
+          await deleteDoc(doc(db, "financial", data.id));
+        }
+      } catch (error) {
+        console.error(error);
+        alert("지출 삭제 중 오류 발생");
+      }
+    },
+    onSuccess: () => {
+      alert("지출 삭제 완료!");
+      queryClient.invalidateQueries({ queryKey: ["expense"] });
+    },
+  });
+  return (data: FinancialInputWithId | ExpenseInputWithId) => mutate(data);
 };
