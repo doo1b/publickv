@@ -11,7 +11,7 @@ const Modal = ({
       onClick={onClose}
     >
       <div
-        className="rounded-xl bg-white px-12 py-10"
+        className="max-h-[80%] overflow-y-scroll rounded-xl bg-white px-12 py-10"
         onClick={(e) => e.stopPropagation()}
       >
         {children}
