@@ -6,12 +6,14 @@ const Category = ({
   onSelectMain,
   error,
   onReset,
+  value,
 }: {
   onSelectMain: (main: string) => void;
   error?: string;
   onReset?: (reset: () => void) => void;
+  value?: string;
 }) => {
-  const [selectedMain, setSelectedMain] = useState("");
+  const [selectedMain, setSelectedMain] = useState(value ? value : "");
 
   const reset = () => {
     setSelectedMain("");

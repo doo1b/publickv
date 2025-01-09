@@ -5,15 +5,22 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import DatePicker from "../../../expense/components/DatePicker";
-import { FinancialInputType } from "@/type/type";
+import { FinancialInputType, FinancialInputWithId } from "@/type/type";
 import { useRef } from "react";
-import { useAddFin } from "@/querys/dataQuerys";
+import { useAddFin, useUpdateExpense } from "@/querys/dataQuerys";
 import Category from "./Category";
 import { formatWithCommas } from "@/utils/formatWithCommas";
 
-const AddExpenditureForm = () => {
+const AddFinancialForm = ({
+  value,
+  onClose,
+}: {
+  value?: FinancialInputWithId;
+  onClose?: () => void;
+}) => {
   // 지출 등록하는 뮤테이션
   const addFin = useAddFin();
+  const updateExp = useUpdateExpense();
 
   // 폼 제출 후 카테고리 초기화를 위한 Ref 연결
   const resetRef = useRef<(() => void) | null>(null);
@@ -44,19 +51,32 @@ const AddExpenditureForm = () => {
   } = useForm<FinancialFormData>({
     resolver: zodResolver(finSchema),
     mode: "onBlur",
-    defaultValues: {
-      amount: 0,
-      comment: "",
-      title: "",
-      main: "",
-      date: new Date(),
-    },
+    defaultValues: value
+      ? {
+          amount: value.amount,
+          comment: value.comment,
+          title: value.title,
+          main: value.main,
+          date: value.date,
+        }
+      : {
+          amount: 0,
+          comment: "",
+          title: "",
+          main: "",
+          date: new Date(),
+        },
   });
   const dateValue = watch("date");
   const amountValue = watch("amount");
 
   // 폼 제출 동작
   const onSubmit = (data: FinancialInputType) => {
+    if (value && onClose) {
+      updateExp({ data, id: value.id });
+      onClose();
+      return;
+    }
     addFin(data);
     reset(); // 폼 리셋
     if (resetRef.current) {
@@ -98,6 +118,7 @@ const AddExpenditureForm = () => {
         onSelectMain={(main) => setValue("main", main)}
         onReset={(reset) => (resetRef.current = reset)}
         error={errors.main?.message}
+        value={value?.main}
       />
       <div className="flex gap-x-7">
         <DatePicker
@@ -114,4 +135,4 @@ const AddExpenditureForm = () => {
   );
 };
 
-export default AddExpenditureForm;
+export default AddFinancialForm;

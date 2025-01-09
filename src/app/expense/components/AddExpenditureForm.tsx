@@ -6,14 +6,21 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import SelectCategory from "./SelectCategory";
 import DatePicker from "./DatePicker";
-import { useAddExp } from "@/querys/dataQuerys";
-import { ExpenseInputType } from "@/type/type";
+import { useAddExp, useUpdateExpense } from "@/querys/dataQuerys";
+import { ExpenseInputType, ExpenseInputWithId } from "@/type/type";
 import { useRef } from "react";
 import { formatWithCommas } from "@/utils/formatWithCommas";
 
-const AddExpenditureForm = () => {
+const AddExpenditureForm = ({
+  value,
+  onClose,
+}: {
+  value?: ExpenseInputWithId;
+  onClose?: () => void;
+}) => {
   // 지출 등록하는 뮤테이션
   const addExp = useAddExp();
+  const updateExp = useUpdateExpense();
 
   // 폼 제출 후 카테고리 초기화를 위한 Ref 연결
   const resetRef = useRef<(() => void) | null>(null);
@@ -45,14 +52,23 @@ const AddExpenditureForm = () => {
   } = useForm<ExpenseFormData>({
     resolver: zodResolver(expSchema),
     mode: "onBlur",
-    defaultValues: {
-      amount: 0,
-      comment: "",
-      title: "",
-      main: "",
-      sub: "",
-      date: new Date(),
-    },
+    defaultValues: value
+      ? {
+          amount: value.amount,
+          comment: value.comment,
+          title: value.title,
+          main: value.main,
+          sub: value.sub,
+          date: value.date,
+        }
+      : {
+          amount: 0,
+          comment: "",
+          title: "",
+          main: "",
+          sub: "",
+          date: new Date(),
+        },
   });
   const dateValue = watch("date");
   const amountValue = watch("amount");
@@ -68,6 +84,11 @@ const AddExpenditureForm = () => {
 
   // 폼 제출 동작
   const onSubmit = (data: ExpenseInputType) => {
+    if (value && onClose) {
+      updateExp({ data, id: value.id });
+      onClose();
+      return;
+    }
     addExp(data); // db 제출
     reset(); // 폼 리셋
     if (resetRef.current) {
@@ -101,6 +122,7 @@ const AddExpenditureForm = () => {
         onSelectSub={(sub) => setValue("sub", sub)}
         onReset={(reset) => (resetRef.current = reset)}
         error={errors.main?.message || errors.sub?.message}
+        value={value && { main: value.main, sub: value.sub }}
       />
       <div className="flex gap-x-7">
         <DatePicker

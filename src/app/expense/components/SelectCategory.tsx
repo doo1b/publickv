@@ -7,14 +7,16 @@ const SelectMain = ({
   onSelectSub,
   error,
   onReset,
+  value,
 }: {
   onSelectMain: (main: string) => void;
   onSelectSub?: (sub: string) => void;
   error?: string;
   onReset?: (reset: () => void) => void;
+  value?: { main: string; sub: string };
 }) => {
-  const [selectedMain, setSelectedMain] = useState("");
-  const [selectedSub, setSelectedSub] = useState("");
+  const [selectedMain, setSelectedMain] = useState(value ? value.main : "");
+  const [selectedSub, setSelectedSub] = useState(value ? value.sub : "");
 
   const reset = () => {
     setSelectedMain("");
@@ -41,7 +43,7 @@ const SelectMain = ({
           ))}
         </div>
         <div
-          className={`${selectedMain === "주 재료" ? "grid-cols-2" : "grid-cols-1"} grid h-full w-2/3 gap-[1px] overflow-clip rounded-md border-[1px] border-secondary-800 bg-secondary-800 text-center`}
+          className={`${selectedMain === "주 재료" ? "grid-cols-2" : "grid-cols-1"} grid w-2/3 gap-[1px] overflow-clip rounded-md border-[1px] border-secondary-800 bg-secondary-800 text-center`}
         >
           {selectedMain ? (
             expenseSub[selectedMain].map((c) => (

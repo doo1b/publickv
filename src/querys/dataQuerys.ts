@@ -1,5 +1,11 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { addDoc, collection, deleteDoc, doc } from "firebase/firestore";
+import {
+  addDoc,
+  collection,
+  deleteDoc,
+  doc,
+  updateDoc,
+} from "firebase/firestore";
 import { db } from "../../firebase/firebasedb";
 import {
   ExpenseInputType,
@@ -86,4 +92,39 @@ export const useDelExpense = () => {
     },
   });
   return (data: FinancialInputWithId | ExpenseInputWithId) => mutate(data);
+};
+
+export const useUpdateExpense = () => {
+  const queryClient = useQueryClient();
+  const { mutate } = useMutation({
+    mutationFn: async ({
+      data,
+      id,
+    }: {
+      data: FinancialInputType | ExpenseInputType;
+      id: string;
+    }) => {
+      try {
+        if (`sub` in data) {
+          await updateDoc(doc(db, "expense", id), { ...data });
+        } else {
+          await updateDoc(doc(db, "financial", id), { ...data });
+        }
+      } catch (error) {
+        console.error(error);
+        alert("지출 수정 중 오류 발생");
+      }
+    },
+    onSuccess: () => {
+      alert("지출 수정 완료!");
+      queryClient.invalidateQueries({ queryKey: ["expense"] });
+    },
+  });
+  return ({
+    data,
+    id,
+  }: {
+    data: FinancialInputType | ExpenseInputType;
+    id: string;
+  }) => mutate({ data, id });
 };
