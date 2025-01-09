@@ -1,6 +1,7 @@
 import { FinancialInputWithId } from "@/type/type";
 import MainBox from "./MainBox";
 import { financialMain } from "@/utils/category";
+import { formatWithCommas } from "@/utils/formatWithCommas";
 
 const FinBox = ({
   financialData,
@@ -24,7 +25,7 @@ const FinBox = ({
           return (
             <div key={m} className="flex justify-between py-1">
               <p>{m}</p>
-              <p>{totalMain}</p>
+              <p>{formatWithCommas(totalMain)}원</p>
             </div>
           );
         })}

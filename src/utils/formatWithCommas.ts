@@ -1,3 +1,3 @@
-export const formatWithCommas = (value: number | string) => {
-  return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+export const formatWithCommas = (value: number | string | undefined) => {
+  return value && value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 };

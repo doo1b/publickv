@@ -8,9 +8,10 @@ import { DayContentProps } from "react-day-picker";
 import useExpenseData from "@/hooks/useExpenseData";
 import useModal from "@/hooks/useModal";
 import Modal from "./ui/Modal";
-import { ExpenseInputWithId, FinancialInputWithId } from "@/type/type";
 import { FaCheck } from "react-icons/fa6";
 import useSelectStore from "@/store/selectStore";
+import DayExpenseBox from "./DayExpenseBox";
+import { formatWithCommas } from "@/utils/formatWithCommas";
 
 const MainCalendar = ({ children }: { children: React.ReactNode }) => {
   const { modalClose, modalOpen, isOpen } = useModal();
@@ -21,12 +22,6 @@ const MainCalendar = ({ children }: { children: React.ReactNode }) => {
   const { selectDate } = useSelectStore();
 
   const { totalByDate, eventMap } = useExpenseData(month);
-
-  const hasSubProperty = (
-    e: ExpenseInputWithId | FinancialInputWithId,
-  ): e is ExpenseInputWithId => {
-    return "sub" in e;
-  };
 
   const changeMonth = (date: Date) => {
     selectDate(date);
@@ -61,9 +56,7 @@ const MainCalendar = ({ children }: { children: React.ReactNode }) => {
                 >
                   {props.date.getDate()}
                 </p>
-                <p className="hidden md:block">
-                  {total?.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
-                </p>
+                <p className="hidden md:block">{formatWithCommas(total)}</p>
                 {events && (
                   <FaCheck
                     className={`h-2 w-2 rounded-full md:hidden`}
@@ -92,30 +85,17 @@ const MainCalendar = ({ children }: { children: React.ReactNode }) => {
       </button>
       {isOpen && (
         <Modal onClose={modalClose}>
-          <div className="grid gap-x-4 gap-y-2 md:grid-cols-3">
-            {!eventMap?.[selectedDate] ? (
-              <p className="body-14-r md:body-16-r">지출이 없습니다.</p>
-            ) : (
-              eventMap[selectedDate].map((e) => (
-                <div
-                  key={e.id}
-                  className="flex flex-col items-center gap-y-3 rounded-md border-[1px] px-4 py-4"
-                >
-                  <p className="body-14-r md:body-16-r w-full text-left">
-                    {e.title}
-                  </p>
-
-                  <p className="body-16-m md:title-18-m px-10">
-                    {e.amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
-                    원
-                  </p>
-                  <p className="caption md:body-14-r w-full text-right">
-                    {e.main} {hasSubProperty(e) && `, ${e.sub}`}
-                  </p>
-                </div>
-              ))
-            )}
-          </div>
+          {!eventMap?.[selectedDate] ? (
+            <p className="body-14-r md:body-16-r">지출이 없습니다.</p>
+          ) : (
+            <div
+              className={`grid gap-x-4 gap-y-2 ${eventMap[selectedDate].length > 2 && "md:grid-cols-3"} `}
+            >
+              {eventMap[selectedDate].map((e) => (
+                <DayExpenseBox e={e} key={e.id} />
+              ))}
+            </div>
+          )}
         </Modal>
       )}
     </div>
